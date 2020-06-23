@@ -133,8 +133,9 @@ export default {
     justify-content: center; /*定义body的里的元素水平居中*/
   }
     .login_box {
-      width: 30%;
-      height: 48%;
+      width: 350px;
+      height: 300px;
+      // height: 35%;
       background-color: #fff;
       border-radius: 3px;
       // border: 1px solid #ededed;

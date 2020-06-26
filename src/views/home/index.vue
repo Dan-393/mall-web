@@ -19,7 +19,6 @@
           <span>用户</span>
         </div>
         <el-menu
-          default-active="2"
           class="el-menu-vertical-demo"
           background-color="#263238"
           text-color="#fff"
@@ -27,7 +26,9 @@
           unique-opened
           :collapse="isCollapse"
           :collapse-transition="false"
-          router
+          router 
+          :default-active="$route.path"
+         
         >
           <!-- 菜单 -->
           <!-- index是点击菜单展开的标识，只能是字符串 -->
@@ -93,7 +94,7 @@ export default {
       const { data: res } = await this.$http.get("menus");
       if (res.meta.status != 200) return this.$message.error(rea.meta.msg);
       this.menuList = res.data;
-      console.log(res);
+      // console.log(res);
     },
     // 切换isCollapse为true/false，是否折叠
     toggleCollapse() {

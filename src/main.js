@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 
 import ElementUI from 'element-ui';
+import TreeTable from 'vue-table-with-tree-grid'
 import 'element-ui/lib/theme-chalk/index.css';//样式文件一定要引入
 
 // 导入全局样式表
@@ -29,6 +30,7 @@ axios.interceptors.request.use(config => {
 
 Vue.config.productionTip = false
 Vue.use(ElementUI);
+Vue.component('tree-table',TreeTable)
 
 new Vue({
   router,

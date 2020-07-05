@@ -48,6 +48,26 @@ const routes = [
         path:'/categories',
         name:'Categories',
         component:()=> import('@/views/goods/categories.vue')
+      },
+      {
+        path:'/params',
+        name:'Params',
+        component:()=> import('@/views/goods/params.vue')
+      },
+      {
+        path:'/goods',
+        name:'Goods',
+        component:()=> import('@/views/goods/goods.vue')
+      },
+      {
+        path:'/orders',
+        name:'Orders',
+        component:()=> import('@/views/orders/Orders.vue')
+      },
+      {
+        path:'/reports',
+        name:'Reports',
+        component:()=> import('@/views/reports/Reports.vue')
       }
 
     ]

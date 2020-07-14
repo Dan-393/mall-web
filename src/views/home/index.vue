@@ -60,6 +60,7 @@
 </template>
 
 <script>
+import {getMenuList} from '@/network/home'
 export default {
   name: "home",
   data() {
@@ -91,8 +92,9 @@ export default {
     },
     // 获取所有的菜单
     async getMenuList() {
-      const { data: res } = await this.$http.get("menus");
-      if (res.meta.status != 200) return this.$message.error(rea.meta.msg);
+      const { data: res } = await getMenuList();
+      console.log(res)
+      if (res.meta.status != 200) return this.$message.error(res.meta.msg);
       this.menuList = res.data;
       // console.log(res);
     },

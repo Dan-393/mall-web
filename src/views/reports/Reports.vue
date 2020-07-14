@@ -18,6 +18,8 @@
 import echarts from "echarts";
 // 使用_将两个对象合并
 import _ from 'lodash'
+import {getReports} from '@/network/reports'
+
 export default {
   name: "Reports",
   data(){
@@ -64,8 +66,8 @@ export default {
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.getElementById("main"));
     // 图表的配置和数据
-    const {data:res} = await this.$http.get('reports/type/1')
-    console.log(res.data)
+    const {data:res} = await getReports()
+
     if(res.meta.status!==200 ) return this.$message.error('获取折线图数据失败')
     this.mergedData=_.merge(res.data,this.options)
     // console.log()

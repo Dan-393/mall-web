@@ -133,6 +133,7 @@
 </template>
 
 <script>
+import {getUserList,changeMgstate,addUser,getInfo,update,deleteUser,getRoles,setRole} from '@/network/users'
 export default {
   name:'Users',
   data(){
@@ -243,7 +244,7 @@ export default {
   methods:{
     async getUserList(){
       //发送网络请求
-      const {data:res} = await this.$http.get('users', {params:this.queryInfo})
+      const {data:res} = await getUserList(this.queryInfo)
       // console.log(res)
       if(res.meta.status !=200 ) return this.$message.error('获取用户列表失败')
       this.uesrlist = res.data.users
@@ -259,7 +260,7 @@ export default {
     // 监听switvh开关状态的改变
     async changeMgstate(userInfo){
       // 调用api接口，将最新的状况保存到数据库
-     const {data:res} = await this.$http.put(`users/${userInfo.id}/state/${userInfo.mg_state}`)
+     const {data:res} = await changeMgstate(userInfo)
      if(res.meta.status !== 200){
        //  失败需要将已修改的状态还原
       userInfo.mg_state = !userInfo.mg_state
@@ -282,7 +283,7 @@ export default {
       this.$refs.addFormRef.validate( async valid => {
         if(!valid) return 
         // 发起添加用户api请求
-        const {data:res} =  await this.$http.post('users',this.addForm)
+        const {data:res} =  await addUser(this.addForm)
         // 隐藏对话框
         // console.log(res)
         if(res.meta.status !== 201) {
@@ -301,7 +302,7 @@ export default {
       this.editDialogVisible = true
       // console.log(id)
       // 根据id查询用户的信息
-      const {data:res} = await this.$http.get(`users/${id}`)
+      const {data:res} = await getInfo(id)
       // console.log(res)
       if(res.meta.status !== 200) return this.$message.error("获取用户信息失败")
       this.editForm = res.data
@@ -317,11 +318,7 @@ export default {
       this.$refs.editFormRef.validate(async valid  =>{
         // console.log(valid)
         if(!valid) return 
-        const {data:res} = await this.$http.put(
-          `users/`+this.editForm.id,{
-            email:this.editForm.email,
-            mobile:this.editForm.mobile
-          })
+        const {data:res} = await update(this.editForm)
         // console.log(res)
         if(res.meta.status !== 200) return this.$message.err("更新用户信息失败")
         // 关闭对话框
@@ -341,7 +338,7 @@ export default {
         // if选择 取消 返回 cancel 字符串
       // console.log(confirmResult)
       if(confirmResult !== 'confirm') return this.$message.info('已取消删除')
-      const {data: res} = await this.$http.delete(`users/${id}`);
+      const {data: res} = await deleteUser(id);
       // 注意，当你await没有写的时候，你得到的res是ndefined
       // console.log(res)
       if(res.meta.status !==200 ) return this.$message.error('删除用户失败')
@@ -352,7 +349,7 @@ export default {
     async setRoleDialog(userInfo){
     this.userInfo = userInfo
     this.setRoleDialogVisible = true
-    const {data:res} = await this.$http.get('roles')
+    const {data:res} = await getRoles()
       if(res.meta.status !== 200 ) return this.$message.error('获取角色列表失败')
       this.rolesList = res.data
     },
@@ -361,7 +358,7 @@ export default {
       if(this.selectedRoleId==='') return this.$message.error('请选择要分配的角色')
       // console.log(this.userInfo.id)
       // console.log(this.selectedRoleId)
-      const {data:res} = await this.$http.put(`users/${this.userInfo.id}/role`,{rid:this.selectedRoleId})
+      const {data:res} = await setRole(this.userInfo.id,this.selectedRoleId) 
       if(res.meta.status!==200) return this.$message.error('分配角色失败')
       this.$message.success('分配角色成功！')
       // console.log(res)

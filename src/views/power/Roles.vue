@@ -122,6 +122,7 @@
 </template>
 
 <script>
+import {getRolesList,addRoles,deleteRoles,getRoles,editRole,removeRight,getRightsTree,allotRight} from '@/network/power'
 export default {
   name:'Roles',
   data(){
@@ -176,7 +177,7 @@ export default {
   methods:{
     // 获取角色列表
     async getRolesList(){
-    const {data:res} = await this.$http.get('roles')
+    const {data:res} = await getRolesList()
     // console.log(res)
     if(res.meta.status !== 200 ) return this.$message.error('请求角色列表信息失败')
     this.rolelist = res.data;
@@ -186,13 +187,13 @@ export default {
     resetAddRolesForm(){
       this.$refs.addRolesFormRef.resetFields()
     },
-    // 添加用户
+    // 添加角色
     addRoles(){
       this.$refs.addRolesFormRef.validate(async valid =>{
         if(!valid) return 
         // 发起请求
         console.log(this.addRolesForm)
-        const {data:res} =  await this.$http.post('roles',this.addRolesForm)
+        const {data:res} =  await addRoles(this.addRolesForm)
         if(res.meta.status !== 201) return this.$message.error("添加用户失败")
         this.addDialogVisible = false
         this.$message.success("用户添加成功")
@@ -212,31 +213,32 @@ export default {
       // if选择 取消 返回 cancel 字符串
       if(confirmResult !== 'confirm') return this.$message.info('已取消删除')
       // 当选择确定时候，发出请求
-      const {data:res} = await this.$http.delete('roles/'+id)
+      const {data:res} = await deleteRoles(id)
       if(res.meta.status !== 200) return this.$message.error('删除角色失败')
       this.$message.success('删除用户成功！')
       this.getRolesList()
     },
     // 编辑角色对话框的展示,参数 用户id
     async showEditDialog(id){
-      const {data :res} = await this.$http.get('roles/'+id)
+      const {data :res} = await getRoles(id)
       if(res.meta.status !== 200 )  return this.$message.error('获取用户信息失败')
       this.editRolesForm = res.data
       this.editDialogVisible = true
     },
-    // 编辑用户
+    // 编辑角色
     editRole(){
       this.$refs.editRolesFormRef.validate(async valid =>{
         if(!valid) return 
-        const {data :res} = await this.$http.put(
-          'roles/'+this.editRolesForm.roleId,this.editRolesForm)
+        const {data :res} = await editRole(this.editRolesForm)
         if(res.meta.status != 200) return this.$message.error('修改用户信息失败')
         this.editDialogVisible = false
+
+
         this.$message.success('修改角色信息成功')
         this.getRolesList()    
       })
     },
-    // 删除角色
+    // 删除角色权限
     async removeRightById(role,rightId){
       const confirmResult = await this.$confirm('此操作将永久删除该角色权限, 是否继续?', '提示', {
             confirmButtonText: '确定',
@@ -247,9 +249,10 @@ export default {
       // if选择 取消 返回 cancel 字符串
       if(confirmResult !== 'confirm') return this.$message.info('已取消删除')
       // 发出删除权限请求
-      const {data:res} = await this.$http.delete('roles/'+role.id+'/rights/'+rightId)
+      // console.log(rightId)
+      const {data:res} = await removeRight(role.id,rightId)
       console.log(res) 
-      if(res.meta.status !== 200) return this.$message.err('取消角色权限失败')
+      if(res.meta.status !== 200) return this.$message.error('取消角色权限失败')
       this.$message.success('取消角色权限成功')
       this.rolelist.children = res.data
     },
@@ -260,7 +263,7 @@ export default {
     async showSetRightDialog(role){
       this.roleId = role.id
       // 获取所有权限的数据
-      const {data : res} = await this.$http.get('rights/tree')
+      const {data : res} = await getRightsTree()
       if(res.meta.status !== 200) return this.$message.error('获取所有权限失败')
       this.rightslist = res.data
       // console.log(this.rightslist)
@@ -296,7 +299,7 @@ export default {
       // console.log(keys)获取的是数字数组
       const idStr = keys.join(',')
       // console.log(idStr)
-      const {data:res} = await this.$http.post('roles/'+this.roleId+'/rights',{rids:idStr})
+      const {data:res} = await allotRight(this.roleId,idStr)
       if(res.meta.status!==200) return this.$message.error('分配权限失败！')
 
       this.$message.success('分配权限成功！')

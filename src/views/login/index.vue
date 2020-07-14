@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import {loginSubmit} from '@/network/login'
 export default {
       name:'login',
       data() {
@@ -96,7 +97,8 @@ export default {
           } else {
             // post的第二个参数是post传入的参数
             // { data:res }解构，从data数据中取出res
-            const{ data:res }= await this.$http.post("login",this.loginForm);
+            const{ data:res }= await loginSubmit(this.loginForm);
+            // console.log(res)
             // console.log(res)
             if(res.meta.status == 200){
             this.$message({

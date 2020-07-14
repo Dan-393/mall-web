@@ -78,6 +78,7 @@
 </template>
 
 <script>
+import {getCateList,getParentCateList,addCate} from '@/network/goods'
 export default {
   data(){
     return {
@@ -149,7 +150,7 @@ export default {
   },
   methods:{
     async getCateList(){
-      const {data:res} = await this.$http.get('categories',{ params:this.queryInfo})
+      const {data:res} = await getCateList(this.queryInfo)
       // console.log(res)
       if(res.meta.status !==200 ) return this.$message.error('获取商品分类列表数据失败')
       // 将数据列表，赋值给catelist
@@ -175,7 +176,7 @@ export default {
     },
     // 获得父级分类的列表
     async getParentCateList(){
-      const{data:res} = await this.$http.get('categories',{params:{type:2}})
+      const{data:res} = await getParentCateList()
       if(res.meta.status !== 200 ) return this.$message.error('获得父级分类的列表失败')
       this.parentCateList =res.data
       // console.log(this.parentCateList)
@@ -197,7 +198,7 @@ export default {
     addCate(){
       this.$refs.addFormRef.validate(async valid =>{
         if(!valid) return 
-        const {data:res} = await this.$http.post('categories',this.addForm)
+        const {data:res} = await addCate(this.addForm)
         console.log(res)
         if(res.meta.status !== 201) return this.$message.error("添加分类失败")
         this.$message.success('添加分类成功！')

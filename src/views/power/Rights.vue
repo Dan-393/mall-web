@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import {getRightsList} from '@/network/power'
 export default {
   name:'Rights',
   data(){
@@ -52,7 +53,7 @@ export default {
   methods:{
     // 向API接口请求权限列表数据
     async getRightsList(){
-      const{data:res} = await this.$http.get('rights/list');
+      const{data:res} = await getRightsList()
       // console.log(res.data)
       this.rightsList = res.data 
     }
